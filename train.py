@@ -188,9 +188,11 @@ def main():
         # small export for the Hub: bf16 weights + config + tokenizer + metrics
         hubdir = os.path.join(args.out, "hub")
         os.makedirs(hubdir, exist_ok=True)
+        # atomic: an upload still reading the previous file never sees a half-written one
+        export = os.path.join(hubdir, f"{args.stage}.pt")
         torch.save({"model": {k: v.to(torch.bfloat16) for k, v in model.state_dict().items()},
-                    "config": cfg.to_dict(), "step": step, "tokens": tokens, "stage": args.stage},
-                   os.path.join(hubdir, f"{args.stage}.pt"))
+                    "config": cfg.to_dict(), "step": step, "tokens": tokens, "stage": args.stage}, export + ".tmp")
+        os.replace(export + ".tmp", export)
         shutil.copy(TOKENIZER_PATH, os.path.join(hubdir, "tokenizer.json"))
         if os.path.exists(metrics_path):
             shutil.copy(metrics_path, os.path.join(hubdir, f"{args.stage}_metrics.jsonl"))

@@ -30,6 +30,10 @@ if [ "$PRETRAIN_MIN" -lt 20 ]; then echo "not enough credit for a useful run"; e
 export PYTHONIOENCODING=utf-8 PYTHONUNBUFFERED=1
 command -v git >/dev/null || (apt-get update -qq && apt-get install -y -qq git)
 python -m pip install -q -r requirements.txt
+
+# Pre-flight: the Hugging Face repo is the only place the work survives once the credit
+# runs out, so prove we can write to it before spending GPU time.
+python scripts/hub_preflight.py "$HF_REPO" || { echo "PRE-FLIGHT FAILED: fix HF_TOKEN / HF_REPO and rerun"; exit 1; }
 python - <<'EOF'
 import torch
 assert torch.cuda.is_available(), "no CUDA GPU visible"

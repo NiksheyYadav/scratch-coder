@@ -59,10 +59,14 @@ weight-space programming -- read the weights, find what causes a failure,       
    ```
 
    Set `CREDIT` to your balance and `PRICE_PER_HR` to the price vast.ai shows for the instance.
-   The script keeps 10% back for storage and bandwidth and sizes pretraining to the rest.
+   The script keeps 10% back for storage and bandwidth and sizes pretraining to the rest
+   (at $0.135/hr, $1.81 gives about 11.4 hours of pretraining).
+   It first checks it can write to your Hugging Face repo and **stops before using the GPU if it can't**.
    If the repo is private, clone it with a GitHub token or copy the folder over with `scp`.
-4. **Watch it.** `run.log` prints loss, tokens/s and the data mix. Every 20 minutes a checkpoint
-   lands in your Hugging Face repo with `pretrain_metrics.jsonl`, so you can follow it from your phone.
+4. **Watch the first 5 minutes.** `run.log` should show `pre-flight OK`, the GPU name, then loss lines
+   with a steady `tok_per_s`. If it crashes, destroy the instance and keep the log.
+   After that, every 20 minutes a checkpoint lands in your Hugging Face repo with
+   `pretrain_metrics.jsonl`, so you can follow it from your phone.
 5. **When it prints `ALL DONE`, destroy the instance** in the console so storage stops billing.
 
 ## What has been checked (CPU, before spending any credit)

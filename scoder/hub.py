@@ -33,7 +33,7 @@ class HubPusher:
             if self.future is not None and self.future.exception() is not None:
                 self.failures += 1
                 print(f"[hub] WARNING: previous upload failed: {self.future.exception()!r}", flush=True)
-            self.future = self.api.upload_folder(repo_id=self.repo_id, folder_path=folder,
+            self.future = self.api.upload_folder(repo_id=self.repo_id, folder_path=folder, ignore_patterns=["*.tmp"],
                                                  commit_message=message, run_as_future=True)
         except Exception as e:
             self.failures += 1
