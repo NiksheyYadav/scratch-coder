@@ -1,0 +1,6 @@
+torch>=2.4  # 2.9+ has torch.optim.Muon built in; older versions use the bundled fallback
+numpy
+tokenizers>=0.20
+pyarrow>=14
+fsspec
+huggingface_hub>=0.25

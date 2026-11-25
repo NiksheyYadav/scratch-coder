@@ -1,0 +1,9 @@
+out/
+checkpoints/
+*.pt
+*.bin
+data/sft_*.jsonl
+__pycache__/
+*.pyc
+.venv/
+run.log
