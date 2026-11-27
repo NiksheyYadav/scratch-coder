@@ -32,12 +32,18 @@ BLOCK = 16 * 2**20
 _fs = None
 
 
+def _read_token():
+    from .hub import read_token
+
+    return read_token()
+
+
 def hf_fs():
     global _fs
     if _fs is None:
         from huggingface_hub import HfFileSystem
 
-        _fs = HfFileSystem(token=os.environ.get("HF_TOKEN"))
+        _fs = HfFileSystem(token=_read_token())
     return _fs
 
 

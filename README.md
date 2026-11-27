@@ -161,3 +161,21 @@ data/stack_edu_manifest.json  which Stack-Edu parquet file holds which language
   Worth it once the base model passes a few percent of tasks.
 - **More agent data** in the anneal mix, and a longer context for long sessions.
 - **A bigger budget:** `--preset base` → wider/deeper preset, same scripts.
+
+## Tests
+
+Fast, offline, CPU-only (no network, no GPU, no real keys):
+
+```bash
+pip install pytest
+python -m pytest tests -q
+```
+
+## Troubleshooting the Hugging Face token
+
+`scripts/hub_preflight.py` checks `HF_TOKEN` before any GPU time is used. It cleans copy/paste damage
+(spaces, newlines, quotes, a `Bearer ` prefix) and tells the causes apart:
+
+- *"looks like a ... key, not a Hugging Face token"*: you pasted a key from another service. Hugging Face tokens start with `hf_`.
+- *401 "not accepted"*: the token is wrong, expired or revoked; create a new one at <https://huggingface.co/settings/tokens>.
+- *403 "no WRITE permission"*: the token is valid but read-only, or `HF_REPO` is not under your account.
