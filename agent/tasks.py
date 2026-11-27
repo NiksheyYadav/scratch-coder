@@ -41,7 +41,9 @@ def load_mbpp(split: str) -> list[dict]:
     import pyarrow.parquet as pq
     from huggingface_hub import HfFileSystem
 
-    fs = HfFileSystem(token=os.environ.get("HF_TOKEN"))
+    from scoder.hub import read_token
+
+    fs = HfFileSystem(token=read_token())
     paths = sorted(fs.glob(f"datasets/{MBPP_REPO}/full/{split}-*.parquet"))
     if not paths:
         raise RuntimeError(f"MBPP split {split} not found")

@@ -11,6 +11,9 @@ import re
 import shutil
 import subprocess
 
+# Model-written commands must not be able to read credentials from the environment.
+_SECRET_ENV = re.compile(r"TOKEN|SECRET|PASSW|API[_-]?KEY|CREDENTIAL|PRIVATE[_-]?KEY", re.IGNORECASE)
+
 _BLOCK = re.compile(
     r"(\brm\s+-[a-zA-Z]*[rf][a-zA-Z]*\s+(/|~|\$HOME|\.\.|\*)(\s|$))|\bmkfs\b|\bdd\s+if=|\bshutdown\b|\breboot\b|:\(\)\s*\{|\bsudo\b"
 )
@@ -35,7 +38,7 @@ BASH = find_bash()
 def run(cmd: str, cwd: str, timeout: int = 20) -> tuple[int, str]:
     if _BLOCK.search(cmd):
         return 1, "Command blocked by the harness safety filter."
-    env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONDONTWRITEBYTECODE="1", GIT_PAGER="cat", PAGER="cat",
+    env = dict({k: v for k, v in os.environ.items() if not _SECRET_ENV.search(k)}, PYTHONIOENCODING="utf-8", PYTHONDONTWRITEBYTECODE="1", GIT_PAGER="cat", PAGER="cat",
                GIT_AUTHOR_NAME="agent", GIT_AUTHOR_EMAIL="agent@localhost",
                GIT_COMMITTER_NAME="agent", GIT_COMMITTER_EMAIL="agent@localhost")
     try:

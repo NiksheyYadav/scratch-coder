@@ -13,6 +13,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 : "${HF_TOKEN:?set HF_TOKEN to a Hugging Face write token}"
+# drop stray whitespace/CRLF/quotes picked up when pasting the token
+HF_TOKEN=$(printf '%s' "$HF_TOKEN" | tr -d '[:space:]"'"'"''); export HF_TOKEN
 : "${HF_REPO:?set HF_REPO, e.g. yourname/scratch-coder}"
 : "${CREDIT:?set CREDIT to your remaining vast.ai balance in dollars, e.g. 1.81}"
 : "${PRICE_PER_HR:?set PRICE_PER_HR to the instance price shown by vast.ai, e.g. 0.135}"
